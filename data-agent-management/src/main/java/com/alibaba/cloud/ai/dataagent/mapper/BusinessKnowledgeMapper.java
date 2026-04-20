@@ -24,10 +24,10 @@ import java.util.List;
 public interface BusinessKnowledgeMapper {
 
 	/**
-	 * Query business knowledge list by agent ID
+	 * Query business knowledge list by saad_agent ID
 	 */
 	@Select("""
-			SELECT * FROM business_knowledge
+			SELECT * FROM saad_business_knowledge
 			WHERE agent_id = #{agentId} AND is_deleted = 0
 			ORDER BY created_time DESC
 			""")
@@ -36,14 +36,14 @@ public interface BusinessKnowledgeMapper {
 	/**
 	 * Query all business knowledge list
 	 */
-	@Select("SELECT * FROM business_knowledge WHERE is_deleted = 0 ORDER BY created_time DESC")
+	@Select("SELECT * FROM saad_business_knowledge WHERE is_deleted = 0 ORDER BY created_time DESC")
 	List<BusinessKnowledge> selectAll();
 
 	/**
-	 * Search in a specific agent scope by keyword
+	 * Search in a specific saad_agent scope by keyword
 	 */
 	@Select("""
-			SELECT * FROM business_knowledge
+			SELECT * FROM saad_business_knowledge
 			WHERE agent_id = #{agentId} AND is_deleted = 0
 			  AND (business_term LIKE CONCAT('%', #{keyword}, '%')
 			    OR description LIKE CONCAT('%', #{keyword}, '%')
@@ -53,7 +53,7 @@ public interface BusinessKnowledgeMapper {
 	List<BusinessKnowledge> searchInAgent(@Param("agentId") Long agentId, @Param("keyword") String keyword);
 
 	@Insert("""
-			INSERT INTO business_knowledge (business_term, description, synonyms, is_recall, agent_id, created_time, updated_time, embedding_status, is_deleted)
+			INSERT INTO saad_business_knowledge (business_term, description, synonyms, is_recall, agent_id, created_time, updated_time, embedding_status, is_deleted)
 			VALUES (#{businessTerm}, #{description}, #{synonyms}, #{isRecall}, #{agentId}, NOW(), NOW(), #{embeddingStatus}, #{isDeleted})
 			""")
 	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
@@ -61,7 +61,7 @@ public interface BusinessKnowledgeMapper {
 
 	@Update("""
 			<script>
-			UPDATE business_knowledge
+			UPDATE saad_business_knowledge
 			<set>
 				<if test="businessTerm != null">business_term = #{businessTerm},</if>
 				<if test="description != null">description = #{description},</if>
@@ -79,25 +79,25 @@ public interface BusinessKnowledgeMapper {
 	int updateById(BusinessKnowledge knowledge);
 
 	@Delete("""
-			DELETE FROM business_knowledge
+			DELETE FROM saad_business_knowledge
 			WHERE id = #{id}
 			""")
 	int deleteById(@Param("id") Long id);
 
 	@Select("""
-			SELECT * FROM business_knowledge
+			SELECT * FROM saad_business_knowledge
 			WHERE id = #{id} AND is_deleted = 0
 			""")
 	BusinessKnowledge selectById(Long id);
 
 	@Select("""
-			SELECT id FROM business_knowledge
+			SELECT id FROM saad_business_knowledge
 			WHERE agent_id = #{agentId} AND is_recall = 1 AND is_deleted = 0
 			""")
 	List<Long> selectRecalledKnowledgeIds(@Param("agentId") Long agentId);
 
 	@Update("""
-			UPDATE business_knowledge
+			UPDATE saad_business_knowledge
 			SET is_deleted = #{isDeleted}, updated_time = NOW()
 			WHERE id = #{id}
 			""")

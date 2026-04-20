@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/agent/{agentId}/datasources")
-@CrossOrigin(origins = "*")
+
 @AllArgsConstructor
 public class AgentDatasourceController {
 

@@ -26,18 +26,18 @@ import java.util.List;
 public interface AgentKnowledgeMapper {
 
 	@Select("""
-			SELECT * FROM agent_knowledge WHERE id = #{id} AND is_deleted = 0
+			SELECT * FROM saad_agent_knowledge WHERE id = #{id} AND is_deleted = 0
 			""")
 	AgentKnowledge selectById(@Param("id") Integer id);
 
 	@Select("""
-			    SELECT * FROM agent_knowledge WHERE id = #{id}
+			    SELECT * FROM saad_agent_knowledge WHERE id = #{id}
 			""")
 	AgentKnowledge selectByIdIncludeDeleted(@Param("id") Integer id);
 
 	@Insert("""
 
-			INSERT INTO agent_knowledge (agent_id, title, content, type, question, is_recall, embedding_status, source_filename, file_path, file_size, file_type, splitter_type, is_deleted, is_resource_cleaned, created_time, updated_time)
+			INSERT INTO saad_agent_knowledge (agent_id, title, content, type, question, is_recall, embedding_status, source_filename, file_path, file_size, file_type, splitter_type, is_deleted, is_resource_cleaned, created_time, updated_time)
 			VALUES (#{agentId}, #{title}, #{content}, #{type}, #{question}, #{isRecall}, #{embeddingStatus}, #{sourceFilename}, #{filePath}, #{fileSize}, #{fileType}, #{splitterType}, #{isDeleted}, #{isResourceCleaned}, #{createdTime}, #{updatedTime})
 
 			""")
@@ -46,7 +46,7 @@ public interface AgentKnowledgeMapper {
 
 	@Update("""
 			<script>
-			UPDATE agent_knowledge
+			UPDATE saad_agent_knowledge
 			<set>
 				<if test="title != null">title = #{title},</if>
 				<if test="content != null">content = #{content},</if>
@@ -71,7 +71,7 @@ public interface AgentKnowledgeMapper {
 
 	@Select("""
 			<script>
-			SELECT * FROM agent_knowledge
+			SELECT * FROM saad_agent_knowledge
 			WHERE agent_id = #{queryDTO.agentId}
 			<if test="queryDTO.title != null and queryDTO.title != ''">
 				AND title LIKE CONCAT('%', #{queryDTO.title}, '%')
@@ -91,7 +91,7 @@ public interface AgentKnowledgeMapper {
 
 	@Select("""
 			<script>
-			SELECT COUNT(*) FROM agent_knowledge
+			SELECT COUNT(*) FROM saad_agent_knowledge
 			WHERE agent_id = #{queryDTO.agentId}
 			<if test="queryDTO.title != null and queryDTO.title != ''">
 				AND title LIKE CONCAT('%', #{queryDTO.title}, '%')
@@ -108,7 +108,7 @@ public interface AgentKnowledgeMapper {
 	Long countByConditions(@Param("queryDTO") AgentKnowledgeQueryDTO queryDTO);
 
 	@Select("""
-			SELECT id FROM agent_knowledge WHERE agent_id = #{agentId} AND is_recall = 1 AND is_deleted = 0
+			SELECT id FROM saad_agent_knowledge WHERE agent_id = #{agentId} AND is_recall = 1 AND is_deleted = 0
 			""")
 	List<Integer> selectRecalledKnowledgeIds(@Param("agentId") Integer agentId);
 
@@ -117,7 +117,7 @@ public interface AgentKnowledgeMapper {
 	 * - N分钟)
 	 */
 	@Select("""
-			    SELECT * FROM agent_knowledge
+			    SELECT * FROM saad_agent_knowledge
 			    WHERE is_deleted = 1
 			      AND is_resource_cleaned = 0
 			      AND updated_time < #{beforeTime}

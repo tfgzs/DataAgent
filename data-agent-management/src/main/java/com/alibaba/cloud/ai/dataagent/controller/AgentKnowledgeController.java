@@ -43,7 +43,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/agent-knowledge")
-@CrossOrigin(origins = "*")
+
 @AllArgsConstructor
 public class AgentKnowledgeController {
 

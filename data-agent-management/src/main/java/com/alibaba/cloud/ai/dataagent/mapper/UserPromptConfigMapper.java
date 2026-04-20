@@ -33,7 +33,7 @@ public interface UserPromptConfigMapper {
 	 */
 	@Select("""
 			<script>
-			SELECT * FROM user_prompt_config
+			SELECT * FROM saad_user_prompt_config
 			WHERE prompt_type = #{promptType}
 			<if test='agentId != null'> AND agent_id = #{agentId}</if>
 			ORDER BY update_time DESC
@@ -46,7 +46,7 @@ public interface UserPromptConfigMapper {
 	 */
 	@Select("""
 			<script>
-			SELECT * FROM user_prompt_config
+			SELECT * FROM saad_user_prompt_config
 			WHERE prompt_type = #{promptType}
 			  AND enabled = 1
 			<if test='agentId != null'> AND agent_id = #{agentId}</if>
@@ -60,7 +60,7 @@ public interface UserPromptConfigMapper {
 	 */
 	@Update("""
 			<script>
-			UPDATE user_prompt_config
+			UPDATE saad_user_prompt_config
 			SET enabled = 0
 			WHERE prompt_type = #{promptType}
 			<if test='agentId != null'> AND agent_id = #{agentId}</if>
@@ -71,21 +71,21 @@ public interface UserPromptConfigMapper {
 	/**
 	 * Enable a specified configuration
 	 */
-	@Update("UPDATE user_prompt_config SET enabled = 1 WHERE id = #{id}")
+	@Update("UPDATE saad_user_prompt_config SET enabled = 1 WHERE id = #{id}")
 	int enableById(@Param("id") String id);
 
 	/**
 	 * Disable a specified configuration
 	 */
-	@Update("UPDATE user_prompt_config SET enabled = 0 WHERE id = #{id}")
+	@Update("UPDATE saad_user_prompt_config SET enabled = 0 WHERE id = #{id}")
 	int disableById(@Param("id") String id);
 
-	@Select("SELECT * FROM user_prompt_config WHERE id = #{id}")
+	@Select("SELECT * FROM saad_user_prompt_config WHERE id = #{id}")
 	UserPromptConfig selectById(String id);
 
 	@Update("""
 			<script>
-			UPDATE user_prompt_config
+			UPDATE saad_user_prompt_config
 			<set>
 			  <if test='name != null'>name = #{name},</if>
 			  <if test='promptType != null'>prompt_type = #{promptType},</if>
@@ -103,7 +103,7 @@ public interface UserPromptConfigMapper {
 	int updateById(UserPromptConfig config);
 
 	@Insert("""
-			INSERT INTO user_prompt_config
+			INSERT INTO saad_user_prompt_config
 			(id, name, prompt_type, agent_id, system_prompt, enabled, description, priority, display_order, create_time, update_time, creator)
 			VALUES (#{id}, #{name}, #{promptType}, #{agentId}, #{systemPrompt}, #{enabled}, #{description}, #{priority}, #{displayOrder}, NOW(), NOW(), #{creator})
 			""")
@@ -111,7 +111,7 @@ public interface UserPromptConfigMapper {
 
 	@Select("""
 			<script>
-			SELECT * FROM user_prompt_config
+			SELECT * FROM saad_user_prompt_config
 			WHERE prompt_type = #{promptType}
 			  AND enabled = true
 			<if test='agentId != null'> AND agent_id = #{agentId}</if>
@@ -123,7 +123,7 @@ public interface UserPromptConfigMapper {
 
 	@Select("""
 			<script>
-			SELECT * FROM user_prompt_config
+			SELECT * FROM saad_user_prompt_config
 			WHERE prompt_type = #{promptType}
 			<if test='agentId != null'> AND agent_id = #{agentId}</if>
 			ORDER BY priority DESC, display_order, update_time DESC
@@ -131,10 +131,10 @@ public interface UserPromptConfigMapper {
 			""")
 	List<UserPromptConfig> getConfigsByType(@Param("promptType") String promptType, @Param("agentId") Long agentId);
 
-	@Select("SELECT * FROM user_prompt_config ORDER BY priority DESC, display_order, update_time DESC")
+	@Select("SELECT * FROM saad_user_prompt_config ORDER BY priority DESC, display_order, update_time DESC")
 	List<UserPromptConfig> selectAll();
 
-	@Delete("DELETE FROM user_prompt_config WHERE id = #{id}")
+	@Delete("DELETE FROM saad_user_prompt_config WHERE id = #{id}")
 	int deleteById(String id);
 
 }

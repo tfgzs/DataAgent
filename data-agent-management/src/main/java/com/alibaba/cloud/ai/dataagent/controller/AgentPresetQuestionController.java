@@ -28,7 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/agent")
-@CrossOrigin(origins = "*")
+
 @AllArgsConstructor
 // todo: 部分返回值和参数需要定义DTO
 public class AgentPresetQuestionController {

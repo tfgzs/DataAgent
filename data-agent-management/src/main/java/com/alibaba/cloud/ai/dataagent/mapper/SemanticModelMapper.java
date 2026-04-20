@@ -23,14 +23,14 @@ import java.util.List;
 @Mapper
 public interface SemanticModelMapper {
 
-	@Select("SELECT * FROM semantic_model ORDER BY created_time DESC")
+	@Select("SELECT * FROM saad_semantic_model ORDER BY created_time DESC")
 	List<SemanticModel> selectAll();
 
 	/**
-	 * Query semantic model list by agent ID
+	 * Query semantic model list by saad_agent ID
 	 */
 	@Select("""
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE agent_id = #{agentId}
 			ORDER BY created_time DESC
 			""")
@@ -40,7 +40,7 @@ public interface SemanticModelMapper {
 	 * Query by id
 	 */
 	@Select("""
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE id = #{id}
 			""")
 	SemanticModel selectById(@Param("id") Long id);
@@ -49,7 +49,7 @@ public interface SemanticModelMapper {
 	 * Search semantic models by keyword
 	 */
 	@Select("""
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE column_name LIKE CONCAT('%', #{keyword}, '%')
 			   OR business_name LIKE CONCAT('%', #{keyword}, '%')
 			   OR business_description LIKE CONCAT('%', #{keyword}, '%')
@@ -62,7 +62,7 @@ public interface SemanticModelMapper {
 	 * Batch enable fields
 	 */
 	@Update("""
-			UPDATE semantic_model
+			UPDATE saad_semantic_model
 			SET status = 1
 			WHERE id = #{id}
 			""")
@@ -72,17 +72,17 @@ public interface SemanticModelMapper {
 	 * Batch disable fields
 	 */
 	@Update("""
-			UPDATE semantic_model
+			UPDATE saad_semantic_model
 			SET status = 0
 			WHERE id = #{id}
 			""")
 	int disableById(@Param("id") Long id);
 
 	/**
-	 * Query semantic models by agent ID and enabled status
+	 * Query semantic models by saad_agent ID and enabled status
 	 */
 	@Select("""
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE agent_id = #{agentId}
 			  AND status != 0
 			ORDER BY created_time DESC
@@ -90,7 +90,7 @@ public interface SemanticModelMapper {
 	List<SemanticModel> selectEnabledByAgentId(@Param("agentId") Long agentId);
 
 	@Insert("""
-			INSERT INTO semantic_model
+			INSERT INTO saad_semantic_model
 			(agent_id, datasource_id, table_name, column_name, business_name, synonyms, business_description, column_comment, data_type, created_time, updated_time, status)
 			VALUES
 			(#{agentId}, #{datasourceId}, #{tableName}, #{columnName}, #{businessName}, #{synonyms}, #{businessDescription}, #{columnComment}, #{dataType}, NOW(), NOW(), #{status})
@@ -100,7 +100,7 @@ public interface SemanticModelMapper {
 
 	@Update("""
 			<script>
-			UPDATE semantic_model
+			UPDATE saad_semantic_model
 			<set>
 			    <if test="agentId != null">agent_id = #{agentId},</if>
 			    <if test="datasourceId != null">datasource_id = #{datasourceId},</if>
@@ -120,17 +120,17 @@ public interface SemanticModelMapper {
 	int updateById(SemanticModel model);
 
 	@Delete("""
-			DELETE FROM semantic_model
+			DELETE FROM saad_semantic_model
 			WHERE id = #{id}
 			""")
 	int deleteById(@Param("id") Long id);
 
 	/**
-	 * Query semantic models by datasource ID, status and table names
+	 * Query semantic models by saad_datasource ID, status and table names
 	 */
 	@Select("""
 			<script>
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE datasource_id = #{datasourceId}
 			  AND status = 1
 			  AND table_name IN
@@ -147,7 +147,7 @@ public interface SemanticModelMapper {
 	 * Query semantic model based on agentId, tableName, and columnName
 	 */
 	@Select("""
-			SELECT * FROM semantic_model
+			SELECT * FROM saad_semantic_model
 			WHERE agent_id = #{agentId}
 			  AND table_name = #{tableName}
 			  AND column_name = #{columnName}

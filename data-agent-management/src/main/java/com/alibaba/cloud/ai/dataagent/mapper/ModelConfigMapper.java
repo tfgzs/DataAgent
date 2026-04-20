@@ -27,7 +27,7 @@ public interface ModelConfigMapper {
 			SELECT id, provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
 			       model_type, completions_path, embeddings_path, created_time, updated_time, is_deleted,
 			       proxy_enabled, proxy_host, proxy_port, proxy_username, proxy_password
-			FROM model_config WHERE is_deleted = 0 ORDER BY created_time DESC
+			FROM saad_model_config WHERE is_deleted = 0 ORDER BY created_time DESC
 			""")
 	List<ModelConfig> findAll();
 
@@ -35,7 +35,7 @@ public interface ModelConfigMapper {
 			SELECT id, provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
 			       model_type, completions_path, embeddings_path, created_time, updated_time, is_deleted,
 			       proxy_enabled, proxy_host, proxy_port, proxy_username, proxy_password
-			FROM model_config WHERE id = #{id} AND is_deleted = 0
+			FROM saad_model_config WHERE id = #{id} AND is_deleted = 0
 			""")
 	ModelConfig findById(Integer id);
 
@@ -43,11 +43,11 @@ public interface ModelConfigMapper {
 			SELECT id, provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
 			       model_type, completions_path, embeddings_path, created_time, updated_time, is_deleted,
 			       proxy_enabled, proxy_host, proxy_port, proxy_username, proxy_password
-			FROM model_config WHERE model_type = #{modelType} AND is_active = 1 AND is_deleted = 0 LIMIT 1
+			FROM saad_model_config WHERE model_type = #{modelType} AND is_active = 1 AND is_deleted = 0 LIMIT 1
 			""")
 	ModelConfig selectActiveByType(@Param("modelType") String modelType);
 
-	@Update("UPDATE model_config SET is_active = 0 WHERE model_type = #{modelType} AND id != #{currentId} AND is_deleted = 0")
+	@Update("UPDATE saad_model_config SET is_active = 0 WHERE model_type = #{modelType} AND id != #{currentId} AND is_deleted = 0")
 	void deactivateOthers(@Param("modelType") String modelType, @Param("currentId") Integer currentId);
 
 	@Select("""
@@ -55,7 +55,7 @@ public interface ModelConfigMapper {
 			   SELECT id, provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
 			          model_type, completions_path, embeddings_path, created_time, updated_time, is_deleted,
 			          proxy_enabled, proxy_host, proxy_port, proxy_username, proxy_password
-			   FROM model_config
+			   FROM saad_model_config
 			   <where>
 			      is_deleted = 0
 			      <if test='provider != null and provider != ""'>
@@ -84,7 +84,7 @@ public interface ModelConfigMapper {
 			@Param("modelType") String modelType);
 
 	@Insert("""
-			INSERT INTO model_config (provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
+			INSERT INTO saad_model_config (provider, base_url, api_key, model_name, temperature, is_active, max_tokens,
 			                         model_type, completions_path, embeddings_path, created_time, updated_time, is_deleted,
 			                         proxy_enabled, proxy_host, proxy_port, proxy_username, proxy_password)
 			VALUES (#{provider}, #{baseUrl}, #{apiKey}, #{modelName}, #{temperature}, #{isActive}, #{maxTokens},
@@ -96,7 +96,7 @@ public interface ModelConfigMapper {
 
 	@Update("""
 			<script>
-			          UPDATE model_config
+			          UPDATE saad_model_config
 			          <trim prefix="SET" suffixOverrides=",">
 			            <if test='provider != null'>provider = #{provider},</if>
 			            <if test='baseUrl != null'>base_url = #{baseUrl},</if>
@@ -122,7 +122,7 @@ public interface ModelConfigMapper {
 	int updateById(ModelConfig modelConfig);
 
 	@Update("""
-			UPDATE model_config SET is_deleted = 1 WHERE id = #{id}
+			UPDATE saad_model_config SET is_deleted = 1 WHERE id = #{id}
 			""")
 	int deleteById(Integer id);
 

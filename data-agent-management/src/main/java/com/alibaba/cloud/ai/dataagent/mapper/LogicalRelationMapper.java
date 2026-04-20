@@ -29,20 +29,20 @@ public interface LogicalRelationMapper {
 	/**
 	 * 根据ID查询逻辑外键
 	 */
-	@Select("SELECT * FROM logical_relation WHERE id = #{id} AND is_deleted = 0")
+	@Select("SELECT * FROM saad_logical_relation WHERE id = #{id} AND is_deleted = 0")
 	LogicalRelation selectById(@Param("id") Integer id);
 
 	/**
 	 * 根据数据源ID查询逻辑外键列表（未删除的）
 	 */
-	@Select("SELECT * FROM logical_relation WHERE datasource_id = #{datasourceId} AND is_deleted = 0 ORDER BY created_time DESC")
+	@Select("SELECT * FROM saad_logical_relation WHERE datasource_id = #{datasourceId} AND is_deleted = 0 ORDER BY created_time DESC")
 	List<LogicalRelation> selectByDatasourceId(@Param("datasourceId") Integer datasourceId);
 
 	/**
 	 * 插入逻辑外键
 	 */
 	@Insert("""
-			INSERT INTO logical_relation
+			INSERT INTO saad_logical_relation
 			    (datasource_id, source_table_name, source_column_name, target_table_name, target_column_name,
 			     relation_type, description, is_deleted, created_time, updated_time)
 			VALUES (#{datasourceId}, #{sourceTableName}, #{sourceColumnName}, #{targetTableName}, #{targetColumnName},
@@ -56,7 +56,7 @@ public interface LogicalRelationMapper {
 	 */
 	@Update("""
 			<script>
-			UPDATE logical_relation
+			UPDATE saad_logical_relation
 			<set>
 			    <if test="sourceTableName != null">source_table_name = #{sourceTableName},</if>
 			    <if test="sourceColumnName != null">source_column_name = #{sourceColumnName},</if>
@@ -74,20 +74,20 @@ public interface LogicalRelationMapper {
 	/**
 	 * 逻辑删除外键
 	 */
-	@Update("UPDATE logical_relation SET is_deleted = 1, updated_time = NOW() WHERE id = #{id}")
+	@Update("UPDATE saad_logical_relation SET is_deleted = 1, updated_time = NOW() WHERE id = #{id}")
 	int deleteById(@Param("id") Integer id);
 
 	/**
 	 * 逻辑删除数据源下的所有逻辑外键
 	 */
-	@Update("UPDATE logical_relation SET is_deleted = 1, updated_time = NOW() WHERE datasource_id = #{datasourceId}")
+	@Update("UPDATE saad_logical_relation SET is_deleted = 1, updated_time = NOW() WHERE datasource_id = #{datasourceId}")
 	int deleteByDatasourceId(@Param("datasourceId") Integer datasourceId);
 
 	/**
 	 * 检查逻辑外键是否存在
 	 */
 	@Select("""
-			SELECT COUNT(*) FROM logical_relation
+			SELECT COUNT(*) FROM saad_logical_relation
 			WHERE datasource_id = #{datasourceId}
 			  AND source_table_name = #{sourceTableName}
 			  AND source_column_name = #{sourceColumnName}

@@ -16,6 +16,32 @@
 import { createApp } from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
+import axios from 'axios';
+import { getAuth, toBasicAuthHeader } from '@/services/auth';
+
+// Axios 拦截器：自动附加 Basic Auth 头
+axios.interceptors.request.use((config) => {
+  const auth = getAuth();
+  if (auth) {
+    config.headers.Authorization = toBasicAuthHeader(auth);
+  }
+  return config;
+});
+
+// 401 时清除登录态并跳转回登录页
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const { clearAuth } = require('@/services/auth');
+      clearAuth();
+      if (router.currentRoute.value.name !== 'Login') {
+        router.push({ name: 'Login', query: { redirect: router.currentRoute.value.fullPath } });
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 // 引入全局样式
 import '@/styles/global.css';

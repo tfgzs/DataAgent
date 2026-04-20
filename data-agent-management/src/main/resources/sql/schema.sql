@@ -1,7 +1,7 @@
 -- 简化的数据库初始化脚本，兼容Spring Boot SQL初始化
 
 -- 智能体表
-CREATE TABLE IF NOT EXISTS agent (
+CREATE TABLE IF NOT EXISTS saad_agent (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL COMMENT '智能体名称',
     description TEXT COMMENT '智能体描述',
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS agent (
     ) ENGINE = InnoDB COMMENT = '智能体表';
 
 -- 业务知识表
-CREATE TABLE IF NOT EXISTS business_knowledge (
+CREATE TABLE IF NOT EXISTS saad_business_knowledge (
   id INT NOT NULL AUTO_INCREMENT,
   business_term VARCHAR(255) NOT NULL COMMENT '业务名词',
   description TEXT COMMENT '描述',
@@ -41,11 +41,11 @@ CREATE TABLE IF NOT EXISTS business_knowledge (
   INDEX idx_is_recall (is_recall),
   INDEX idx_embedding_status (embedding_status),
   INDEX idx_is_deleted (is_deleted),
-  FOREIGN KEY (agent_id) REFERENCES agent(id) ON DELETE CASCADE
+  FOREIGN KEY (agent_id) REFERENCES saad_agent(id) ON DELETE CASCADE
 ) ENGINE = InnoDB COMMENT = '业务知识表';
 
 -- 语义模型表
-CREATE TABLE IF NOT EXISTS `semantic_model` (
+CREATE TABLE IF NOT EXISTS `saad_semantic_model` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `agent_id` int(11) NOT NULL COMMENT '关联的智能体ID',
   `datasource_id` int(11) NOT NULL COMMENT '关联的数据源ID',
@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS `semantic_model` (
   KEY `idx_agent_id` (`agent_id`) USING BTREE,
   KEY `idx_field_name` (`business_name`) USING BTREE,
   KEY `idx_status` (`status`) USING BTREE,
-  CONSTRAINT `fk_semantic_model_agent` FOREIGN KEY (`agent_id`) REFERENCES `agent` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_semantic_model_agent` FOREIGN KEY (`agent_id`) REFERENCES `saad_agent` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='语义模型表';
 
 
 -- 智能体知识表
-CREATE TABLE IF NOT EXISTS `agent_knowledge` (
+CREATE TABLE IF NOT EXISTS `saad_agent_knowledge` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID, 用于内部关联',
   `agent_id` int(11) NOT NULL COMMENT '关联的智能体ID',
   `title` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '知识的标题 (用户定义, 用于在UI上展示和识别)',
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `agent_knowledge` (
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='智能体知识源管理表 (支持文档、QA、FAQ)';
 
 -- 数据源表
-CREATE TABLE IF NOT EXISTS datasource (
+CREATE TABLE IF NOT EXISTS saad_datasource (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL COMMENT '数据源名称',
   type VARCHAR(50) NOT NULL COMMENT '数据源类型：mysql, postgresql',
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS datasource (
 ) ENGINE = InnoDB COMMENT = '数据源表';
 
 -- 逻辑外键配置表
-CREATE TABLE IF NOT EXISTS logical_relation (
+CREATE TABLE IF NOT EXISTS saad_logical_relation (
   id INT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   datasource_id INT NOT NULL COMMENT '关联的数据源ID',
   source_table_name VARCHAR(100) NOT NULL COMMENT '主表名 (例如 t_order)',
@@ -133,11 +133,11 @@ CREATE TABLE IF NOT EXISTS logical_relation (
   PRIMARY KEY (id),
   INDEX idx_datasource_id (datasource_id) COMMENT '加速根据数据源查找关系的查询',
   INDEX idx_source_table (datasource_id, source_table_name) COMMENT '加速根据表名查找关系的查询',
-  FOREIGN KEY (datasource_id) REFERENCES datasource(id) ON DELETE CASCADE
+  FOREIGN KEY (datasource_id) REFERENCES saad_datasource(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '逻辑外键配置表';
 
 -- 智能体数据源关联表
-CREATE TABLE IF NOT EXISTS agent_datasource (
+CREATE TABLE IF NOT EXISTS saad_agent_datasource (
   id INT NOT NULL AUTO_INCREMENT,
   agent_id INT NOT NULL COMMENT '智能体ID',
   datasource_id INT NOT NULL COMMENT '数据源ID',
@@ -149,12 +149,12 @@ CREATE TABLE IF NOT EXISTS agent_datasource (
   INDEX idx_agent_id (agent_id),
   INDEX idx_datasource_id (datasource_id),
   INDEX idx_is_active (is_active),
-  FOREIGN KEY (agent_id) REFERENCES agent(id) ON DELETE CASCADE,
-  FOREIGN KEY (datasource_id) REFERENCES datasource(id) ON DELETE CASCADE
+  FOREIGN KEY (agent_id) REFERENCES saad_agent(id) ON DELETE CASCADE,
+  FOREIGN KEY (datasource_id) REFERENCES saad_datasource(id) ON DELETE CASCADE
 ) ENGINE = InnoDB COMMENT = '智能体数据源关联表';
 
 -- 智能体预设问题表
-CREATE TABLE IF NOT EXISTS agent_preset_question (
+CREATE TABLE IF NOT EXISTS saad_agent_preset_question (
   id INT NOT NULL AUTO_INCREMENT,
   agent_id INT NOT NULL COMMENT '智能体ID',
   question TEXT NOT NULL COMMENT '预设问题内容',
@@ -166,11 +166,11 @@ CREATE TABLE IF NOT EXISTS agent_preset_question (
   INDEX idx_agent_id (agent_id),
   INDEX idx_sort_order (sort_order),
   INDEX idx_is_active (is_active),
-  FOREIGN KEY (agent_id) REFERENCES agent(id) ON DELETE CASCADE
+  FOREIGN KEY (agent_id) REFERENCES saad_agent(id) ON DELETE CASCADE
 ) ENGINE = InnoDB COMMENT = '智能体预设问题表';
 
 -- 会话表
-CREATE TABLE IF NOT EXISTS chat_session (
+CREATE TABLE IF NOT EXISTS saad_chat_session (
   id VARCHAR(36) NOT NULL COMMENT '会话ID（UUID）',
   agent_id INT NOT NULL COMMENT '智能体ID',
   title VARCHAR(255) DEFAULT '新对话' COMMENT '会话标题',
@@ -185,11 +185,11 @@ CREATE TABLE IF NOT EXISTS chat_session (
   INDEX idx_status (status),
   INDEX idx_is_pinned (is_pinned),
   INDEX idx_create_time (create_time),
-  FOREIGN KEY (agent_id) REFERENCES agent(id) ON DELETE CASCADE
+  FOREIGN KEY (agent_id) REFERENCES saad_agent(id) ON DELETE CASCADE
 ) ENGINE = InnoDB COMMENT = '聊天会话表';
 
 -- 消息表
-CREATE TABLE IF NOT EXISTS chat_message (
+CREATE TABLE IF NOT EXISTS saad_chat_message (
   id BIGINT NOT NULL AUTO_INCREMENT,
   session_id VARCHAR(36) NOT NULL COMMENT '会话ID',
   role VARCHAR(20) NOT NULL COMMENT '角色：user-用户，assistant-助手，system-系统',
@@ -202,11 +202,11 @@ CREATE TABLE IF NOT EXISTS chat_message (
   INDEX idx_role (role),
   INDEX idx_message_type (message_type),
   INDEX idx_create_time (create_time),
-  FOREIGN KEY (session_id) REFERENCES chat_session(id) ON DELETE CASCADE
+  FOREIGN KEY (session_id) REFERENCES saad_chat_session(id) ON DELETE CASCADE
 ) ENGINE = InnoDB COMMENT = '聊天消息表';
 
 -- 用户Prompt配置表
-CREATE TABLE IF NOT EXISTS user_prompt_config (
+CREATE TABLE IF NOT EXISTS saad_user_prompt_config (
   id VARCHAR(36) NOT NULL COMMENT '配置ID（UUID）',
   name VARCHAR(255) NOT NULL COMMENT '配置名称',
   prompt_type VARCHAR(100) NOT NULL COMMENT 'Prompt类型（如report-generator, planner等）',
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS user_prompt_config (
   INDEX idx_display_order (display_order ASC)
 ) ENGINE = InnoDB COMMENT = '用户Prompt配置表';
 
-create table if not exists agent_datasource_tables
+create table if not exists saad_agent_datasource_tables
 (
     id                  int auto_increment primary key,
     agent_datasource_id int                                 not null comment '智能体数据源ID',
@@ -238,14 +238,14 @@ create table if not exists agent_datasource_tables
     constraint agent_datasource_tables_agent_datasource_id_table_name_uindex
         unique (agent_datasource_id, table_name),
     constraint agent_datasource_tables_agent_datasource_id_fk
-        foreign key (agent_datasource_id) references agent_datasource (id)
+        foreign key (agent_datasource_id) references saad_agent_datasource (id)
             on update cascade on delete cascade
 )
     comment '某个智能体某个数据源所选中的数据表';
 
 
 -- 模型配置表
-CREATE TABLE IF NOT EXISTS `model_config` (
+CREATE TABLE IF NOT EXISTS `saad_model_config` (
                                               `id` int(11) NOT NULL AUTO_INCREMENT,
     `provider` varchar(255) NOT NULL COMMENT '厂商标识 (方便前端展示回显，实际调用主要靠 baseUrl)',
     `base_url` varchar(255) NOT NULL COMMENT '关键配置',

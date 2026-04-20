@@ -53,6 +53,12 @@ spring:
             bucket-name: ${OSS_BUCKET_NAME:}
             custom-domain: ${OSS_CUSTOM_DOMAIN:}
         max-sql-retry-count: 10
+        # Basic Auth 登录认证配置
+        security:
+          username: ${DATA_AGENT_AUTH_USERNAME:admin}
+          password: ${DATA_AGENT_AUTH_PASSWORD:admin123}
+          role: ADMIN
+          allowed-origins: ${DATA_AGENT_ALLOWED_ORIGINS:http://127.0.0.1:9521,http://localhost:9521,https://yourdomain:9521}
         # Langfuse 可观测性配置
         langfuse:
           enabled: ${LANGFUSE_ENABLED:false}

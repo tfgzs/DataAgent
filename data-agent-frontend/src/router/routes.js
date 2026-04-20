@@ -16,6 +16,17 @@
 
 // 路由模块化配置
 const routes = [
+  // 登录页
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/Login.vue'),
+    meta: {
+      title: '登录',
+      module: 'auth',
+    },
+  },
+
   // 首页重定向
   {
     path: '/',

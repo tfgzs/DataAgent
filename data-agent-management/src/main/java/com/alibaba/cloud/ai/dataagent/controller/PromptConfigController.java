@@ -34,7 +34,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/prompt-config")
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 public class PromptConfigController {
 
 	private static final Logger logger = LoggerFactory.getLogger(PromptConfigController.class);

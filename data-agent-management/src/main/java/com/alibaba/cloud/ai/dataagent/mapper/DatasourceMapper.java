@@ -35,14 +35,14 @@ import java.util.Map;
 @Mapper
 public interface DatasourceMapper {
 
-	@Select("SELECT * FROM datasource WHERE id = #{id}")
+	@Select("SELECT * FROM saad_datasource WHERE id = #{id}")
 	Datasource selectById(@Param("id") Integer id);
 
-	@Select("SELECT * FROM datasource ORDER BY create_time DESC")
+	@Select("SELECT * FROM saad_datasource ORDER BY create_time DESC")
 	List<Datasource> selectAll();
 
 	@Insert("""
-			INSERT INTO datasource
+			INSERT INTO saad_datasource
 			    (name, type, host, port, database_name, username, password, connection_url, status, test_status, description, creator_id, create_time, update_time)
 			VALUES (#{name}, #{type}, #{host}, #{port}, #{databaseName}, #{username}, #{password}, #{connectionUrl}, #{status}, #{testStatus}, #{description}, #{creatorId}, NOW(), NOW())
 			""")
@@ -54,7 +54,7 @@ public interface DatasourceMapper {
 	 */
 	@Update("""
 			<script>
-			UPDATE datasource
+			UPDATE saad_datasource
 			<set>
 			    <if test="name != null">name = #{name},</if>
 			    <if test="type != null">type = #{type},</if>
@@ -75,43 +75,43 @@ public interface DatasourceMapper {
 			""")
 	int updateById(Datasource datasource);
 
-	@Update("UPDATE datasource SET test_status = #{testStatus} WHERE id = #{id}")
+	@Update("UPDATE saad_datasource SET test_status = #{testStatus} WHERE id = #{id}")
 	int updateTestStatusById(@Param("id") Integer id, @Param("testStatus") String testStatus);
 
 	/**
 	 * Query data source list by status
 	 */
-	@Select("SELECT * FROM datasource WHERE status = #{status} ORDER BY create_time DESC")
+	@Select("SELECT * FROM saad_datasource WHERE status = #{status} ORDER BY create_time DESC")
 	List<Datasource> selectByStatus(@Param("status") String status);
 
 	/**
 	 * Query data source list by type
 	 */
-	@Select("SELECT * FROM datasource WHERE type = #{type} ORDER BY create_time DESC")
+	@Select("SELECT * FROM saad_datasource WHERE type = #{type} ORDER BY create_time DESC")
 	List<Datasource> selectByType(@Param("type") String type);
 
 	/**
 	 * Get data source statistics - by status
 	 */
-	@Select("SELECT status, COUNT(*) as count FROM datasource GROUP BY status")
+	@Select("SELECT status, COUNT(*) as count FROM saad_datasource GROUP BY status")
 	List<Map<String, Object>> selectStatusStats();
 
 	/**
 	 * Get data source statistics - by type
 	 */
-	@Select("SELECT type, COUNT(*) as count FROM datasource GROUP BY type")
+	@Select("SELECT type, COUNT(*) as count FROM saad_datasource GROUP BY type")
 	List<Map<String, Object>> selectTypeStats();
 
 	/**
 	 * Get data source statistics - by test status
 	 */
-	@Select("SELECT test_status, COUNT(*) as count FROM datasource GROUP BY test_status")
+	@Select("SELECT test_status, COUNT(*) as count FROM saad_datasource GROUP BY test_status")
 	List<Map<String, Object>> selectTestStatusStats();
 
-	@Select("SELECT COUNT(*) FROM datasource")
+	@Select("SELECT COUNT(*) FROM saad_datasource")
 	Long selectCount();
 
-	@Delete("DELETE FROM datasource WHERE id = #{id}")
+	@Delete("DELETE FROM saad_datasource WHERE id = #{id}")
 	int deleteById(Integer id);
 
 }

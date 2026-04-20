@@ -24,14 +24,14 @@ import java.util.List;
 public interface AgentPresetQuestionMapper {
 
 	@Select("""
-			SELECT * FROM agent_preset_question
+			SELECT * FROM saad_agent_preset_question
 			         WHERE agent_id = #{agentId} AND is_active = 1
 			ORDER BY sort_order ASC, id ASC
 			""")
 	List<AgentPresetQuestion> selectByAgentId(@Param("agentId") Long agentId);
 
 	@Select("""
-			SELECT * FROM agent_preset_question
+			SELECT * FROM saad_agent_preset_question
 			         WHERE agent_id = #{agentId}
 			ORDER BY sort_order ASC, id ASC
 			""")
@@ -41,12 +41,12 @@ public interface AgentPresetQuestionMapper {
 	 * Query by id
 	 */
 	@Select("""
-			SELECT * FROM agent_preset_question WHERE id = #{id}
+			SELECT * FROM saad_agent_preset_question WHERE id = #{id}
 			""")
 	AgentPresetQuestion selectById(@Param("id") Long id);
 
 	@Insert("""
-			INSERT INTO agent_preset_question (agent_id, question, sort_order, is_active, create_time, update_time)
+			INSERT INTO saad_agent_preset_question (agent_id, question, sort_order, is_active, create_time, update_time)
 			VALUES (#{agentId}, #{question}, #{sortOrder}, #{isActive}, NOW(), NOW())
 			""")
 	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
@@ -54,7 +54,7 @@ public interface AgentPresetQuestionMapper {
 
 	@Update("""
 			<script>
-			UPDATE agent_preset_question
+			UPDATE saad_agent_preset_question
 			<set>
 				<if test="question != null">question = #{question},</if>
 				<if test="sortOrder != null">sort_order = #{sortOrder},</if>
@@ -67,12 +67,12 @@ public interface AgentPresetQuestionMapper {
 	int update(AgentPresetQuestion question);
 
 	@Delete("""
-			DELETE FROM agent_preset_question WHERE id = #{id}
+			DELETE FROM saad_agent_preset_question WHERE id = #{id}
 			""")
 	int deleteById(@Param("id") Long id);
 
 	@Delete("""
-			DELETE FROM agent_preset_question WHERE agent_id = #{agentId}
+			DELETE FROM saad_agent_preset_question WHERE agent_id = #{agentId}
 			""")
 	int deleteByAgentId(@Param("agentId") Long agentId);
 

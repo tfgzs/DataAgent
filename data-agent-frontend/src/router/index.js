@@ -18,6 +18,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import routes from '@/router/routes';
 import modelConfigService from '@/services/modelConfig';
+import { getAuth } from '@/services/auth';
 
 // 创建路由实例
 const router = createRouter({
@@ -42,6 +43,25 @@ router.beforeEach(async (to, from, next) => {
     document.title = `${to.meta.title} - Spring AI Alibaba Data Agent`;
   } else {
     document.title = 'Spring AI Alibaba Data Agent';
+  }
+
+  // 登录页直接放行
+  if (to.name === 'Login') {
+    // 已登录则直接跳转到目标页
+    const auth = getAuth();
+    if (auth) {
+      next(to.query.redirect ? to.query.redirect : '/agents');
+      return;
+    }
+    next();
+    return;
+  }
+
+  // 检查是否已登录
+  const auth = getAuth();
+  if (!auth) {
+    next({ name: 'Login', query: { redirect: to.fullPath } });
+    return;
   }
 
   if (to.path === '/model-config') {

@@ -24,22 +24,22 @@ import java.util.List;
 public interface AgentMapper {
 
 	@Select("""
-			SELECT * FROM agent ORDER BY create_time DESC
+			SELECT * FROM saad_agent ORDER BY create_time DESC
 			""")
 	List<Agent> findAll();
 
 	@Select("""
-			SELECT * FROM agent WHERE id = #{id}
+			SELECT * FROM saad_agent WHERE id = #{id}
 			""")
 	Agent findById(Long id);
 
 	@Select("""
-			SELECT * FROM agent WHERE status = #{status} ORDER BY create_time DESC
+			SELECT * FROM saad_agent WHERE status = #{status} ORDER BY create_time DESC
 			""")
 	List<Agent> findByStatus(String status);
 
 	@Select("""
-			SELECT * FROM agent
+			SELECT * FROM saad_agent
 			WHERE (name LIKE CONCAT('%', #{keyword}, '%')
 				   OR description LIKE CONCAT('%', #{keyword}, '%')
 				   OR tags LIKE CONCAT('%', #{keyword}, '%'))
@@ -49,7 +49,7 @@ public interface AgentMapper {
 
 	@Select("""
 			<script>
-				SELECT * FROM agent
+				SELECT * FROM saad_agent
 				<where>
 					<if test='status != null and status != ""'>
 						AND status = #{status}
@@ -66,7 +66,7 @@ public interface AgentMapper {
 	List<Agent> findByConditions(@Param("status") String status, @Param("keyword") String keyword);
 
 	@Insert("""
-			INSERT INTO agent (name, description, avatar, status, api_key, api_key_enabled, prompt, category, admin_id, tags, create_time, update_time)
+			INSERT INTO saad_agent (name, description, avatar, status, api_key, api_key_enabled, prompt, category, admin_id, tags, create_time, update_time)
 			VALUES (#{name}, #{description}, #{avatar}, #{status}, #{apiKey}, #{apiKeyEnabled}, #{prompt}, #{category}, #{adminId}, #{tags}, #{createTime}, #{updateTime})
 			""")
 	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
@@ -74,7 +74,7 @@ public interface AgentMapper {
 
 	@Update("""
 			<script>
-			          UPDATE agent
+			          UPDATE saad_agent
 			          <trim prefix="SET" suffixOverrides=",">
 			            <if test='name != null'>name = #{name},</if>
 			            <if test='description != null'>description = #{description},</if>
@@ -94,7 +94,7 @@ public interface AgentMapper {
 	int updateById(Agent agent);
 
 	@Update("""
-			UPDATE agent
+			UPDATE saad_agent
 			SET api_key = #{apiKey}, api_key_enabled = #{apiKeyEnabled}, update_time = NOW()
 			WHERE id = #{id}
 			""")
@@ -102,14 +102,14 @@ public interface AgentMapper {
 			@Param("apiKeyEnabled") Integer apiKeyEnabled);
 
 	@Update("""
-			UPDATE agent
+			UPDATE saad_agent
 			SET api_key_enabled = #{enabled}, update_time = NOW()
 			WHERE id = #{id}
 			""")
 	int toggleApiKey(@Param("id") Long id, @Param("enabled") Integer enabled);
 
 	@Delete("""
-			DELETE FROM agent WHERE id = #{id}
+			DELETE FROM saad_agent WHERE id = #{id}
 			""")
 	int deleteById(Long id);
 
