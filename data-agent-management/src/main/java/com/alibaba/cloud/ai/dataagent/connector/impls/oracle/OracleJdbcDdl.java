@@ -19,6 +19,7 @@ import com.alibaba.cloud.ai.dataagent.bo.schema.*;
 import com.alibaba.cloud.ai.dataagent.connector.SqlExecutor;
 import com.alibaba.cloud.ai.dataagent.connector.ddl.AbstractJdbcDdl;
 import com.alibaba.cloud.ai.dataagent.enums.BizDataSourceTypeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static com.alibaba.cloud.ai.dataagent.util.ColumnTypeUtil.wrapType;
 
+@Slf4j
 @Service
 public class OracleJdbcDdl extends AbstractJdbcDdl {
 
@@ -107,6 +109,7 @@ public class OracleJdbcDdl extends AbstractJdbcDdl {
 		try {
 			String ownerSchema = getSchema(connection, schema);
 			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM (");
 			sql.append("SELECT t.TABLE_NAME, c.COMMENTS FROM ALL_TABLES t ");
 			sql.append("LEFT JOIN ALL_TAB_COMMENTS c ON t.TABLE_NAME = c.TABLE_NAME AND t.OWNER = c.OWNER ");
 			sql.append("WHERE t.OWNER = '").append(ownerSchema).append("' ");
@@ -114,10 +117,13 @@ public class OracleJdbcDdl extends AbstractJdbcDdl {
 			if (StringUtils.isNotBlank(tablePattern)) {
 				sql.append("AND t.TABLE_NAME LIKE '%").append(tablePattern.toUpperCase()).append("%' ");
 			}
-			sql.append("AND ROWNUM <= 2000 ");
-			sql.append("ORDER BY t.TABLE_NAME");
+			sql.append("ORDER BY t.TABLE_NAME) ");
+			sql.append("WHERE ROWNUM <= 2000");
 
-			String[][] resultArr = SqlExecutor.executeSqlAndReturnArr(connection, ownerSchema, sql.toString());
+			String finalSql = sql.toString();
+			log.info("Executing Oracle showTables SQL: {}", finalSql);
+
+			String[][] resultArr = SqlExecutor.executeSqlAndReturnArr(connection, ownerSchema, finalSql);
 			if (resultArr.length <= 1) {
 				return Lists.newArrayList();
 			}
@@ -151,10 +157,13 @@ public class OracleJdbcDdl extends AbstractJdbcDdl {
 				.map(x -> "'" + x.toUpperCase() + "'")
 				.collect(Collectors.joining(", "));
 
-			String sql = String.format("SELECT t.TABLE_NAME, c.COMMENTS FROM ALL_TABLES t "
+			String sql = String.format("SELECT * FROM (SELECT t.TABLE_NAME, c.COMMENTS FROM ALL_TABLES t "
 					+ "LEFT JOIN ALL_TAB_COMMENTS c ON t.TABLE_NAME = c.TABLE_NAME AND t.OWNER = c.OWNER "
-					+ "WHERE t.OWNER = '%s' AND t.TABLE_NAME IN (%s) " + "AND ROWNUM <= 200 " + "ORDER BY t.TABLE_NAME",
+					+ "WHERE t.OWNER = '%s' AND t.TABLE_NAME IN (%s) "
+					+ "ORDER BY t.TABLE_NAME) WHERE ROWNUM <= 200",
 					ownerSchema, tableListStr);
+
+			log.info("Executing Oracle fetchTables SQL: {}", sql);
 
 			String[][] resultArr = SqlExecutor.executeSqlAndReturnArr(connection, sql);
 			if (resultArr.length <= 1) {
