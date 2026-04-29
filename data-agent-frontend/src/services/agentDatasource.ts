@@ -37,7 +37,9 @@ class AgentDatasourceService {
    */
   async initSchema(agentId: string): Promise<ApiResponse<null>> {
     try {
-      const response = await axios.post<ApiResponse<null>>(`${BASE_URL_FUNC(agentId)}/init`);
+      const response = await axios.post<ApiResponse<null>>(`${BASE_URL_FUNC(agentId)}/init`, null, {
+        timeout: 600000,
+      });
       return response.data;
     } catch (error) {
       throw new Error(`初始化Schema失败: ${error}`);

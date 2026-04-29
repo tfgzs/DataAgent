@@ -35,7 +35,12 @@ public interface Nl2SqlService {
 			String sqlGenerateSchemaMissingAdvice, DbConfigBO specificDbConfig, Consumer<SchemaDTO> dtoConsumer);
 
 	default String sqlTrim(String sql) {
-		return MarkdownParserUtil.extractRawText(sql).trim();
+		String trimmed = MarkdownParserUtil.extractRawText(sql).trim();
+		// 去除末尾分号（Oracle 不支持带分号的 SQL 语句）
+		while (trimmed.endsWith(";")) {
+			trimmed = trimmed.substring(0, trimmed.length() - 1).trim();
+		}
+		return trimmed;
 	}
 
 }
