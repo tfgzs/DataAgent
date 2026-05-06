@@ -27,11 +27,13 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.springframework.core.annotation.Order;
 
 /**
  * @author David Yu
  */
 @Slf4j
+@Order(1)
 @RequiredArgsConstructor
 public class SimpleVectorStoreInitialization implements ApplicationRunner, DisposableBean {
 

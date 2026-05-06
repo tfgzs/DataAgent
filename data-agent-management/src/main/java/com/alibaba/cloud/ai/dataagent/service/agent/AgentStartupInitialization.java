@@ -27,9 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@Order(2)
 @Service
 @RequiredArgsConstructor
 public class AgentStartupInitialization implements ApplicationRunner, DisposableBean {
