@@ -998,8 +998,8 @@
             ElMessage.error('操作失败！');
             console.error('Failed to change datasource:', response);
           }
-        } catch (error) {
-          ElMessage.error('操作失败！');
+        } catch (error: any) {
+          ElMessage.error(error?.message || '操作失败！');
           console.error('Failed to change datasource:', error);
         }
       };

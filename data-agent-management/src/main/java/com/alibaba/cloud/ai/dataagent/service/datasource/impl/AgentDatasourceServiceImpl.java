@@ -19,6 +19,7 @@ import com.alibaba.cloud.ai.dataagent.bo.DbConfigBO;
 import com.alibaba.cloud.ai.dataagent.dto.datasource.SchemaInitRequest;
 import com.alibaba.cloud.ai.dataagent.entity.AgentDatasource;
 import com.alibaba.cloud.ai.dataagent.entity.Datasource;
+import com.alibaba.cloud.ai.dataagent.exception.InvalidInputException;
 import com.alibaba.cloud.ai.dataagent.mapper.AgentDatasourceMapper;
 import com.alibaba.cloud.ai.dataagent.mapper.AgentDatasourceTablesMapper;
 import com.alibaba.cloud.ai.dataagent.service.datasource.AgentDatasourceService;
@@ -145,7 +146,7 @@ public class AgentDatasourceServiceImpl implements AgentDatasourceService {
 		if (isActive) {
 			int activeCount = agentDatasourceMapper.countActiveByAgentIdExcluding(agentId, datasourceId);
 			if (activeCount > 0) {
-				throw new RuntimeException("同一智能体下只能启用一个数据源，请先禁用其他数据源后再启用此数据源");
+				throw new InvalidInputException("同一智能体下只能启用一个数据源，请先禁用其他数据源后再启用此数据源");
 			}
 		}
 

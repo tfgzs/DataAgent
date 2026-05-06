@@ -138,8 +138,9 @@ class AgentDatasourceService {
         dto,
       );
       return response.data;
-    } catch (error) {
-      throw new Error(`切换数据源状态失败: ${error}`);
+    } catch (error: any) {
+      const message = error?.response?.data?.message || `切换数据源状态失败: ${error}`;
+      throw new Error(message);
     }
   }
 
